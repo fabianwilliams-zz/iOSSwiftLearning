@@ -28,8 +28,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 //                        "Test smoke alarms"]
     
     var dailyTasks = [
-        Task(name: "Check all windows", type: .Daily, completed: false, lastCompleted: nil),
-        Task(name: "Check all doors", type: .Daily, completed: false, lastCompleted: nil),
+        Task(name: "Check all windows", type: .Daily, completed: true, lastCompleted: nil),
+        Task(name: "Check all doors", type: .Daily, completed: true, lastCompleted: nil),
         Task(name: "Check temperature of freezer", type: .Daily, completed: false, lastCompleted: nil),
         Task(name: "Check the mailbox at the end of the lane", type: .Daily, completed: false, lastCompleted: nil),
         Task(name: "Empty trash containers", type: .Daily, completed: false, lastCompleted: nil),
@@ -38,11 +38,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var weeklyTasks = [
         Task(name: "Check inside all unoccupied cabins", type: .Daily, completed: false, lastCompleted: nil),
         Task(name: "Run all faucets for 30 seconds", type: .Daily, completed: false, lastCompleted: nil),
-        Task(name: "Walk the perimeter of property", type: .Daily, completed: false, lastCompleted: nil),
-        Task(name: "Arrange for dumpster pickup", type: .Daily, completed: false, lastCompleted: nil)
+        Task(name: "Walk the perimeter of property", type: .Daily, completed: true, lastCompleted: nil),
+        Task(name: "Arrange for dumpster pickup", type: .Daily, completed: true, lastCompleted: nil)
         ]
     var twoWeekTasks = [
-        Task(name: "Run test on security alarm", type: .Daily, completed: false, lastCompleted: nil),
+        Task(name: "Run test on security alarm", type: .Daily, completed: true, lastCompleted: nil),
         Task(name: "Check all motion detectors", type: .Daily, completed: false, lastCompleted: nil),
         Task(name: "Test smoke alarms", type: .Daily, completed: false, lastCompleted: nil)
         ]
@@ -65,6 +65,59 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return 3
     }
     
+    //going to create an outlet here for the table view so i can reference it in the
+    //reset list action. this is because inside that Action i dont have access to TableView
+    
+    @IBOutlet weak var taskTableViewOutlet: UITableView!
+    
+    //using the below action on the Reset Toolbar Button to reset the list
+    @IBAction func resetList(_ sender: Any) {
+        
+        //This is a sanity check Dialog box that will give the person an OUT
+        //if they dont want to take this destrutive duty
+        let confirm = UIAlertController(title: "No Turning Back", message: "Are you really sure you want to reset this list", preferredStyle: .alert)
+        
+        //We need to wire up the actual actions we want to invoke. in our case its a Yes and No Click
+        let yesAction = UIAlertAction(title: "Yes", style: .destructive, handler: {
+            action in
+            for i in 0..<self.dailyTasks.count {
+                self.dailyTasks[i].completed = false
+            }
+            for i in 0..<self.weeklyTasks.count {
+                self.weeklyTasks[i].completed = false
+            }
+            for i in 0..<self.twoWeekTasks.count {
+                self.twoWeekTasks[i].completed = false
+            }
+            self.taskTableViewOutlet.reloadData()
+        })
+        let noAction = UIAlertAction(title: "No", style: .default, handler: {
+            action in
+            print("ok. we wont do that")
+        })
+        
+        //Actually add both the Yes and No ACtion to the UIAlert Controller
+        confirm.addAction(yesAction)
+        confirm.addAction(noAction)
+        
+        //Now Show the Controller to the user
+        //old version had presentViewController but that is no longer used
+        present(confirm, animated: true, completion: nil)
+        
+//We moved this to inside the Yes action becasue its only if the person selects YES
+//do we actualy want to reset the list. Also we have to use 'self' moniker as its running on a sepearte tread
+//        for i in 0..<dailyTasks.count {
+//            dailyTasks[i].completed = false
+//        }
+//        for i in 0..<weeklyTasks.count {
+//            weeklyTasks[i].completed = false
+//        }
+//        for i in 0..<twoWeekTasks.count {
+//            twoWeekTasks[i].completed = false
+//        }
+//        taskTableViewOutlet.reloadData()
+        
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
@@ -95,8 +148,22 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             //currentTask = ""
             break
         }
+        //cant use the below anymore since this is no longer a String
         //cell.textLabel!.text = currentTask
+        
+        //using the below now because this a Task object
         cell.textLabel!.text = currentTask.name
+        
+        //Lets use some OOB check mark to show if an item is completed or not and affect the color of it too
+        if currentTask.completed {
+            cell.textLabel?.textColor = UIColor.lightGray
+            cell.accessoryType = .checkmark
+        }
+        else {
+            cell.textLabel?.textColor = UIColor.black
+            cell.accessoryType = .checkmark
+            cell.accessoryType = .none
+        }
         
         //setting the below for teh seame reason in line 41
         cell.backgroundColor = UIColor.clear
@@ -125,6 +192,34 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("You selected row: \(indexPath.row) in selection: \(indexPath.section)")
+    }
+    
+    //the below Delegate Method is used to allow User Input actions on a Row. We will use it for the user
+    //to mark an item complete
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let myAction = UITableViewRowAction(style: .default, title: "Complete", handler: {
+            //closure parameters expect two params
+            action, indexPath in
+            //find the right object and set it. basially we have sections and it needs to set the complete boolean to true
+            //the resulting action will be that a check mark will appear next to the item that had the complete button clicked
+            switch  indexPath.section {
+            case 0:
+                self.dailyTasks[indexPath.row].completed = true
+            case 1:
+                self.weeklyTasks[indexPath.row].completed = true
+            case 2:
+                self.twoWeekTasks[indexPath.row].completed = true
+            default:
+                break
+            }
+            //refresh the list
+            tableView.reloadData()
+            //let the table view know after the person marks complete that they are done
+            //i.e. the button is gone
+            tableView.isEditing = false
+        })
+            let actions = [myAction]
+        return actions
     }
     
     override func viewDidLoad() {

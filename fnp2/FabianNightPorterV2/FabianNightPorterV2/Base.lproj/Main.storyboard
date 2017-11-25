@@ -39,6 +39,12 @@
                                         </switch>
                                     </barButtonItem>
                                     <barButtonItem enabled="NO" title="dark mode" id="aEj-Ud-8wa"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="pSH-fC-YfG"/>
+                                    <barButtonItem title="reset" id="Php-si-GnB">
+                                        <connections>
+                                            <action selector="resetList:" destination="BYZ-38-t0r" id="fng-Jb-R60"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                         </subviews>
@@ -54,6 +60,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="taskTableViewOutlet" destination="mlD-yT-3b8" id="Xm5-Ph-WV9"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
