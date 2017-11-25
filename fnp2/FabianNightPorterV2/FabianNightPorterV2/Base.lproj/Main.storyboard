@@ -26,13 +26,31 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="h4b-A1-EtE"/>
                                 </connections>
                             </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MUT-sq-sxv">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" id="bBN-1B-NZN">
+                                        <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="cYm-es-hRQ">
+                                            <rect key="frame" x="16" y="6.5" width="51" height="31"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <connections>
+                                                <action selector="toggleDarkMode:" destination="BYZ-38-t0r" eventType="valueChanged" id="x1P-2M-SUe"/>
+                                            </connections>
+                                        </switch>
+                                    </barButtonItem>
+                                    <barButtonItem enabled="NO" title="dark mode" id="aEj-Ud-8wa"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="MUT-sq-sxv" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="6F6-1W-SPA"/>
                             <constraint firstAttribute="trailing" secondItem="mlD-yT-3b8" secondAttribute="trailing" id="9JE-ae-1Vl"/>
                             <constraint firstItem="mlD-yT-3b8" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="FM9-Zc-zFS"/>
                             <constraint firstItem="mlD-yT-3b8" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="fgp-fL-DY5"/>
+                            <constraint firstItem="MUT-sq-sxv" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="mqy-pN-Q64"/>
                             <constraint firstItem="mlD-yT-3b8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pmo-eJ-adM"/>
+                            <constraint firstItem="MUT-sq-sxv" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="uYA-WS-Tvt"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
